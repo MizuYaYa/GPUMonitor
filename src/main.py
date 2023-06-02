@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import cv2
 from PIL import Image, ImageTk, ImageOps
+import GPUMonitor_icon
 
 
 #グラボの温度を取得
@@ -111,7 +112,8 @@ def start_gui():
 
     root.title("GPUMonitor")
     root.geometry("640x360")
-    root.iconphoto(False, PhotoImage(file="GPUMonitor.png"))
+    icon = GPUMonitor_icon.get_image_icon()
+    root.iconphoto(False, icon)
     root.protocol("WM_DELETE_WINDOW", delete_window)
     root.attributes("-topmost", True)
 
@@ -129,7 +131,7 @@ def start_credit():
     credit = Label(root, width=640, height=360, bg="black", relief="flat", bd=0)
     credit.grid(column=0, row=0, sticky="nsew")
 
-    video = cv2.VideoCapture("bit.ly/3OTOfLF")
+    video = cv2.VideoCapture("https://bit.ly/3OTOfLF")
     def next_frame():
         global playing, photo_image
         ret, frame = video.read()
@@ -143,19 +145,20 @@ def start_credit():
             credit.config(image=photo_image)
             credit.photo_image = photo_image
     def video_frame_timer():
-        print("credit_video start")
+        print("credit_video: 開始 \n スキップする場合は何かキーを押してください")
         time.sleep(0.5)
         credit.tkraise()
         while playing:
             next_frame()
             time.sleep(0.03)
         credit.destroy()
-        print("credit_video end")
+        print("credit_video: 終了")
     def key_event(e):
         global playing
         key = e.keysym
-        playing = False
-        print(f"key_event: {key}キー入力があったためcredit_videoを停止します。")
+        if playing:
+            playing = False
+            print(f"key_event: {key}キー入力があったためcredit_videoを停止します。")
     root.bind("<KeyPress>", key_event)
     threading.Thread(target=video_frame_timer, daemon=True).start()
 

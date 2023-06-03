@@ -4,7 +4,6 @@ from tkinter import ttk
 from tkinter import messagebox
 import time
 import threading
-import pandas as pd
 import numpy as np
 import cv2
 from PIL import Image, ImageTk, ImageOps
@@ -17,28 +16,6 @@ def get_gpu_temp():
     temp = int(subprocess.check_output(cmd))
     return temp
 #print(f"get_gpu_temp: {get_gpu_temp()}")
-
-#グラボを使用しているソフトをcsv形式で保存
-def get_gpu_use_apps():
-    cmd = 'nvidia-smi', '--query-compute-apps=name,pid', '--format=csv', '--filename=F:\programing\PycharmProject\GPUMonitor\src\gpu_use_apps_log.csv' #nvidia-smi --query-compute-apps=name,pid --format=csv --filename=F:\programing\PycharmProject\GPUMonitor\log.csv
-    apps = subprocess.check_output(cmd)
-    return apps
-#print(f"get_gpu_use_apps: {get_gpu_use_apps()}")
-
-#ソフトのpidをソフトの名前から取得します
-def get_app_pid(app_name):
-    df = pd.read_csv("gpu_use_apps_log.csv", sep=",", encoding="shift-jis")
-    app = df[df["process_name"].str.contains(app_name)]
-    reset_index_app = app.reset_index(drop=True)
-    app_pid = reset_index_app.iat[0, 1]
-    return app_pid
-#print(f"get_app_pid: \n {get_app_pid('プロセス名')}")
-
-#PIDを使用してタスクをキルします
-def task_kill_using_pid(pid):
-    cmd = 'taskkill', "/t", '/pid', f'{pid}', '/F'
-    return subprocess.run(cmd, stdout=subprocess.PIPE, encoding="shift-jis")
-#print(f"task_kill_using_pid: \n {task_kill_using_pid(get_app_pid('プロセス名'))}")
 
 #app_name(タスク名)を使用してタスクをキルします
 def task_kill_using_app_name(app_name):

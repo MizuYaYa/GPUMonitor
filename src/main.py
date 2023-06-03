@@ -42,7 +42,8 @@ playing = True
 
 root = Tk()
 
-temp = IntVar(root)
+temp_progressbar = IntVar(root)
+temp = StringVar(root)
 
 process_name = StringVar(root)
 max_temp = IntVar(root)
@@ -74,8 +75,9 @@ def regular_gpu_temp():
     global gpu_temp
     while window_open:
         gpu_temp = get_gpu_temp()
-        temp.set(gpu_temp)
-        print(f"GPUTemp: {gpu_temp}")
+        temp.set(f"{gpu_temp}°C")
+        temp_progressbar.set(gpu_temp)
+        print(f"GPUTemp: {gpu_temp}°C")
         time.sleep(gpu_temp_get_interval)
     print(f"regular_gpu_temp: GPU温度の取得を停止します。")
 
@@ -175,7 +177,7 @@ def draw_frame():
 
     gpu_temp_frame = Frame(root, width=280, height=190, borderwidth=1, relief="solid")
     gpu_temp_label = Label(gpu_temp_frame, text=f"{gpu_temp}°C", font=(font, 64), textvariable=temp)
-    temp_bar = ttk.Progressbar(gpu_temp_frame, maximum=110, mode="determinate", length=200, value=gpu_temp,variable=temp)
+    temp_bar = ttk.Progressbar(gpu_temp_frame, maximum=110, mode="determinate", length=200, value=gpu_temp,variable=temp_progressbar)
     #
     #
     operation_frame = Frame(root, width=280, height=100, borderwidth=1, relief="solid")
